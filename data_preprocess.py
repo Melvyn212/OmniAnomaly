@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import ast
 import csv
 import os
@@ -6,6 +8,17 @@ from pickle import dump
 
 import numpy as np
 from tfsnippet.utils import makedirs
+
+if len(sys.argv) < 3:
+    print("""
+        Usage: python data_preprocess.py <dataset> <output_folder>
+        where <dataset> should be one of ['SMD', 'SMAP', 'MSL']
+        and <output_folder> is the directory to save processed files
+        """)
+    sys.exit(1)
+
+dataset = sys.argv[1]
+output_folder = sys.argv[2]
 
 output_folder = 'processed'
 makedirs(output_folder, exist_ok=True)
@@ -22,7 +35,7 @@ def load_and_save(category, filename, dataset, dataset_folder):
 
 def load_data(dataset):
     if dataset == 'SMD':
-        dataset_folder = 'ServerMachineDataset'
+        dataset_folder = 'EdgeAI/MODEL/OmniAnomaly/ServerMachineDataset'
         file_list = os.listdir(os.path.join(dataset_folder, "train"))
         for filename in file_list:
             if filename.endswith('.txt'):
@@ -30,7 +43,7 @@ def load_data(dataset):
                 load_and_save('test', filename, filename.strip('.txt'), dataset_folder)
                 load_and_save('test_label', filename, filename.strip('.txt'), dataset_folder)
     elif dataset == 'SMAP' or dataset == 'MSL':
-        dataset_folder = 'data'
+        dataset_folder = 'EdgeAI/MODEL/OmniAnomaly/data'
         with open(os.path.join(dataset_folder, 'labeled_anomalies.csv'), 'r') as file:
             csv_reader = csv.reader(file, delimiter=',')
             res = [row for row in csv_reader][1:]
@@ -66,16 +79,13 @@ def load_data(dataset):
             concatenate_and_save(c)
 
 
+
+
+# Autres parties du script restent inchangées
+
 if __name__ == '__main__':
-    datasets = ['SMD', 'SMAP', 'MSL']
-    commands = sys.argv[1:]
-    load = []
-    if len(commands) > 0:
-        for d in commands:
-            if d in datasets:
-                load_data(d)
+    if dataset in ['SMD', 'SMAP', 'MSL']:
+        makedirs(output_folder, exist_ok=True)
+        load_data(dataset)
     else:
-        print("""
-        Usage: python data_preprocess.py <datasets>
-        where <datasets> should be one of ['SMD', 'SMAP', 'MSL']
-        """)
+        print("Dataset not recognized. Please choose from ['SMD', 'SMAP', 'MSL'].")

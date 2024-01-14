@@ -23,7 +23,7 @@ from omni_anomaly.utils import get_data_dim, get_data, save_z
 
 class ExpConfig(Config):
     # dataset configuration
-    dataset = "machine-1-1"
+    dataset = "MSL"
     x_dim = get_data_dim(dataset)
 
     # model architecture configuration
@@ -33,15 +33,15 @@ class ExpConfig(Config):
     # model parameters
     z_dim = 3
     rnn_cell = 'GRU'  # 'GRU', 'LSTM' or 'Basic'
-    rnn_num_hidden = 500
+    rnn_num_hidden = 50
     window_length = 100
-    dense_dim = 500
+    dense_dim = 50
     posterior_flow_type = 'nf'  # 'nf' or None
     nf_layers = 20  # for nf
-    max_epoch = 10
+    max_epoch = 1
     train_start = 0
     max_train_size = None  # `None` means full train set
-    batch_size = 50
+    batch_size = 10
     l2_reg = 0.0001
     initial_lr = 0.001
     lr_anneal_factor = 0.5
